@@ -1,11 +1,12 @@
 import { supabase } from '@/lib/supabase';
 import SpotifyTrackEmbed from '@/components/SpotifyTrackEmbed';
 
-export default async function RapperPage({ params }: { params: { id: string } }) {
+export default async function RapperPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
   const { data: rapper, error } = await supabase
     .from('rappers')
     .select('*')
-    .eq('id', params.id)
+    .eq('id', id)
     .single();
 
   if (error || !rapper) {
