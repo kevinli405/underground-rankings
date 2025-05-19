@@ -1,6 +1,4 @@
-import Image from 'next/image';
 import { supabase } from '@/lib/supabase';
-import { Rapper } from '@/lib/database.types';
 import SpotifyTrackEmbed from '@/components/SpotifyTrackEmbed';
 
 export default async function RapperPage({ params }: { params: { id: string } }) {
