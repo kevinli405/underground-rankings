@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { Rapper } from '@/lib/database.types';
-import Link from 'next/link';
+import Image from 'next/image';
+import { User } from '@supabase/supabase-js';
 
 interface UserVote {
   id: string;
@@ -36,7 +36,7 @@ interface VoteResponse {
 }
 
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [votes, setVotes] = useState<UserVote[]>([]);
   const [totalVotes, setTotalVotes] = useState(0);
   const [favoriteRapper, setFavoriteRapper] = useState<string>('-');
@@ -152,7 +152,7 @@ export default function ProfilePage() {
 
     try {
       if (isSignUp) {
-        const { data, error } = await supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -161,7 +161,7 @@ export default function ProfilePage() {
             }
           }
         });
-        if (error) throw error;
+        if (signUpError) throw signUpError;
         
         // Sign in immediately after sign up
         const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -285,21 +285,27 @@ export default function ProfilePage() {
                       {votes.map((vote) => (
                         <div key={vote.id} className="flex items-center justify-between p-2 bg-white rounded">
                           <div className="flex items-center space-x-4">
-                            <img
-                              src={vote.winner.image_url}
-                              alt={vote.winner.name}
-                              className="w-10 h-10 rounded-full"
-                            />
+                            <div className="relative w-10 h-10">
+                              <Image
+                                src={vote.winner.image_url}
+                                alt={vote.winner.name}
+                                fill
+                                className="rounded-full object-cover"
+                              />
+                            </div>
                             <span className="font-medium">{vote.winner.name}</span>
                           </div>
                           <span className="text-gray-500">vs</span>
                           <div className="flex items-center space-x-4">
                             <span className="font-medium">{vote.loser.name}</span>
-                            <img
-                              src={vote.loser.image_url}
-                              alt={vote.loser.name}
-                              className="w-10 h-10 rounded-full"
-                            />
+                            <div className="relative w-10 h-10">
+                              <Image
+                                src={vote.loser.image_url}
+                                alt={vote.loser.name}
+                                fill
+                                className="rounded-full object-cover"
+                              />
+                            </div>
                           </div>
                           <span className="text-sm text-gray-500">
                             {new Date(vote.created_at).toLocaleDateString()}

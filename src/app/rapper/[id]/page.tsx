@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase';
 import SpotifyTrackEmbed from '@/components/SpotifyTrackEmbed';
+import Image from 'next/image';
 
 export default async function RapperPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
@@ -27,11 +28,14 @@ export default async function RapperPage({ params }: { params: Promise<{ id: str
   return (
     <div className="max-w-4xl mx-auto px-4">
       <div className="flex flex-col items-center mb-8">
-        <img 
-          src={rapper.image_url} 
-          alt={rapper.name}
-          style={{ width: '192px', height: '192px', objectFit: 'cover', borderRadius: '50%', marginBottom: '8px' }}
-        />
+        <div className="relative w-48 h-48 mb-2">
+          <Image 
+            src={rapper.image_url} 
+            alt={rapper.name}
+            fill
+            className="rounded-full object-cover"
+          />
+        </div>
 
         <h1 className="text-4xl font-bold" style={{ margin: '8px 0' }}>{rapper.name}</h1>
 
