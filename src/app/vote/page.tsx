@@ -89,15 +89,23 @@ export default function VotePage() {
         })
         .eq('id', loser.id);
 
+      // Get current user if authenticated
+      const { data: { user } } = await supabase.auth.getUser();
+
       // Record the vote
-      await supabase
+      const { error: voteError } = await supabase
         .from('votes')
         .insert([
           {
+            user_id: user?.id || null,
             winner_id: winner.id,
             loser_id: loser.id
           }
         ]);
+
+      if (voteError) {
+        throw voteError;
+      }
 
       // Fetch next pair
       fetchRandomPair();
